@@ -3,36 +3,21 @@ import {
   Text,
   View,
   TextInput,
-  Button, Modal
+  Button
 } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
 
+  const [textInput, setTextInput] = useState('');
   const [text, setText] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const onTextChanged = (text: string) => {
-    setText(text);
-  }
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.textInput} onChangeText={onTextChanged}/>
-      <Button title={'Open'}
-              onPress={() => setModalVisible(true)}/>
-
-      <Modal animationType="slide"
-             transparent={true}
-             visible={modalVisible}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text>{text}</Text>
-            <Button title={'Close'}
-                    onPress={() => setModalVisible(false)}/>
-          </View>
-        </View>
-      </Modal>
+      <TextInput style={styles.textInput} onChangeText={setTextInput}/>
+      <Button title={'Отобразить'}
+              onPress={() => setText(textInput)}/>
+      <Text>{text || ''}</Text>
     </View>
   );
 }
