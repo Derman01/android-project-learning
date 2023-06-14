@@ -10,7 +10,6 @@ export const CalcScreen = () => {
 	const [displayValue, setDisplayValue] = useState('0');
 	const [firstNumber, setFirstNumber] = useState<number>(0);
 	const [secondNumber, setSecondNumber] = useState<number | null>(null);
-	const [result, setResult] = useState<number | null>(null);
 	const [operator, setOperator] = useState<TypeOperator | null>();
 
 	const handleNumberPress = (number: number) => () => {
@@ -18,14 +17,10 @@ export const CalcScreen = () => {
 		const floatIndex = displayValue.split('').indexOf('.');
 		const countFloat = displayValue.length - floatIndex;
 
-		const currentNumber = operator ? (
-			secondNumber === null ? secondNumber : result
-		) : firstNumber;
-		const setValue = operator ? (
-			secondNumber === null ? setSecondNumber : setResult
-		) : setFirstNumber;
+		const currentNumber = operator ? secondNumber : firstNumber;
+		const setValue = operator ? setSecondNumber : setFirstNumber;
 
-		const numberPlus = floatIndex !== -1 && currentNumber !== null ? number / (10 * countFloat) : number;
+		const numberPlus = floatIndex !== -1 && currentNumber !== null ? number / (10 ** countFloat) : number;
 
 		const value = ((currentNumber || 0) * (floatIndex === -1 ? 10 : 1) + numberPlus) * module;
 		setDisplayValue(value.toString().slice(0, 9));
@@ -36,7 +31,6 @@ export const CalcScreen = () => {
 		setDisplayValue('0');
 		setFirstNumber(0);
 		setSecondNumber(null);
-		setResult(null);
 		setOperator(null);
 	};
 
@@ -50,11 +44,8 @@ export const CalcScreen = () => {
 			}
 		} else {
 			if (secondNumber) {
-				if (result !== null) {
-					setResult(value => value as number * -1);
-				} else {
-					setSecondNumber(value => value as number * -1);
-				}
+				setSecondNumber(value => value as number * -1);
+
 			} else {
 				setFirstNumber(value => value as number * -1);
 			}
@@ -71,25 +62,19 @@ export const CalcScreen = () => {
 		} else {
 			const value = Number(displayValue) / 100;
 			setDisplayValue(value.toString().slice(0, 9));
-			if (result !== null) {
-				setResult(res => res as number / 100);
-			} else {
-				setSecondNumber(res => res as number / 100);
-			}
+			setSecondNumber(res => res as number / 100);
+
 		}
 	};
 
 	const handleOperatorPress = (operator: TypeOperator) => () => {
-		if (operator && secondNumber !== null) {
-			calcResult();
-		}
 		setOperator(operator);
 		setSecondNumber(null);
 	};
 
 	const calcResult = () => {
 		const second = secondNumber === null ? firstNumber : secondNumber;
-		setSecondNumber(second);
+		setSecondNumber(null);
 		if (!operator) {
 			return;
 		}
@@ -100,13 +85,15 @@ export const CalcScreen = () => {
 			'-': (a: number, b: number) => a - b,
 		};
 
-		let value = process[operator](result || firstNumber, second) as number;
+		let value = process[operator](firstNumber, second) as number;
 		if (Number.isNaN(value) || value === Number.POSITIVE_INFINITY || value === Number.NEGATIVE_INFINITY) {
 			setDisplayValue('Ошибка');
+			setFirstNumber(0);
+			setSecondNumber(null);
+			setOperator(null);
 		} else {
 			value = Math.round(value * 10e6) / 10e6;
 			setFirstNumber(value);
-			setResult(value);
 			setDisplayValue(value.toString().slice(0, 9));
 		}
 	};
@@ -158,15 +145,16 @@ export const CalcScreen = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		fontFamily: 'sans-serif',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 		backgroundColor: 'black'
 	},
 	center: {
 		flex: 1,
+		width: '100%',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
+		paddingBottom: 20,
 	},
 	buttonRow: {
 		width: '100%',

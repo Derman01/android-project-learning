@@ -17,16 +17,20 @@ export const CalcDisplay: FC<CalcDisplayProps> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		width: '100%',
 		alignItems: 'flex-end',
 		justifyContent: 'flex-end',
-		marginRight: 10,
-		marginLeft: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
 		marginBottom: 40
 	},
 	display: {
 		color: 'white',
+		marginRight: 10,
+		marginLeft: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
+		textAlign: 'right',
 		fontSize: 50,
 	}
 });
