@@ -88,9 +88,7 @@ export const CalcScreen = () => {
 		let value = process[operator](firstNumber, second) as number;
 		if (Number.isNaN(value) || value === Number.POSITIVE_INFINITY || value === Number.NEGATIVE_INFINITY) {
 			setDisplayValue('Ошибка');
-			setFirstNumber(0);
-			setSecondNumber(null);
-			setOperator(null);
+			setFirstNumber(value);
 		} else {
 			value = Math.round(value * 10e6) / 10e6;
 			setFirstNumber(value);
